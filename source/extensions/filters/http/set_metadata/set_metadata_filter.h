@@ -19,10 +19,11 @@ namespace SetMetadataFilter {
 class Config : public ::Envoy::Router::RouteSpecificFilterConfig,
                public Logger::Loggable<Logger::Id::config> {
 public:
-  Config(const envoy::extensions::filters::http::set_metadata::v3::Config& config);
+  Config(const envoy::extensions::filters::http::set_metadata::v3::Config& config, const bool per_route = false);
+  Config(const absl::string_view metadata_namespace, const ProtobufWkt::Struct& value);
 
   absl::string_view metadataNamespace() const { return namespace_; }
-  const ProtobufWkt::Struct& value() { return value_; }
+  const ProtobufWkt::Struct& value() const { return value_; }
 
 private:
   std::string namespace_;
@@ -46,8 +47,11 @@ public:
   void setDecoderFilterCallbacks(Http::StreamDecoderFilterCallbacks&) override;
 
 private:
-  const ConfigSharedPtr config_;
+  mutable ConfigSharedPtr config_;
+  mutable const Config* effective_config_{nullptr};
   Http::StreamDecoderFilterCallbacks* decoder_callbacks_;
+
+  const Config* getConfig() const;
 };
 
 } // namespace SetMetadataFilter

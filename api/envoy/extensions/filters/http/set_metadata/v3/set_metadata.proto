@@ -21,7 +21,7 @@ option (udpa.annotations.file_status).package_version_status = ACTIVE;
 
 message Config {
   // The metadata namespace.
-  string metadata_namespace = 1 [(validate.rules).string = {min_len: 1}];
+  string metadata_namespace = 1;
 
   // The value to update the namespace with. See
   // :ref:`the filter documentation <config_http_filters_set_metadata>` for
